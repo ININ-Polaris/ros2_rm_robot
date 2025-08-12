@@ -71,7 +71,7 @@ void RmArm::Arm_Set_Hand_Seq_Callback(const rm_ros_interfaces::msg::Handseq::Sha
 
 void RmArm::Arm_Set_Hand_Angle_Callback(const rm_ros_interfaces::msg::Handangle::SharedPtr msg)
 {
-    int hand_data[12];
+    int hand_data[12] = {};
     uint32_t res = 0;
     rm_peripheral_read_write_params_t params;
     params.port = 1;
@@ -80,46 +80,42 @@ void RmArm::Arm_Set_Hand_Angle_Callback(const rm_ros_interfaces::msg::Handangle:
     params.num = 6;
     // bool block;
     std_msgs::msg::Bool set_hand_angle_result;
-    for(int i = 0;i<6;i++)
-    {
-        hand_data[i * 2] = msg->hand_angle[i] & 0xFF;
-        hand_data[i * 2 + 1] = (msg->hand_angle[i] >> 8) & 0xFF;
-        // hand_data[i * 2] = msg->hand_angle[i] & 0xFF;
-        // hand_data[i * 2 + 1] = (msg->hand_angle[i] >> 8) & 0xFF;
-    }
-    // block = msg->block;
-    //res = Rm_Api.Service_Set_Hand_Angle(m_sockhand, angle, block);
-    RCLCPP_INFO (this->get_logger(),"Arm set hand angle %d, %d, %d, %d, %d, %d\n", msg->hand_angle[0], msg->hand_angle[1], msg->hand_angle[2], msg->hand_angle[3], msg->hand_angle[4], msg->hand_angle[5]);
-    RCLCPP_INFO (this->get_logger(),"Arm set hand data %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d\n", hand_data[0], hand_data[1], hand_data[2], hand_data[3], hand_data[4], hand_data[5], hand_data[6], hand_data[7], hand_data[8], hand_data[9], hand_data[10], hand_data[11]);
-    // RCLCPP_INFO (this->get_logger(),"int: %ld, short: %ld, long: %ld, float: %ld, double: %ld, char: %ld\n", sizeof(int), sizeof(short), sizeof(long), sizeof(float), sizeof(double), sizeof(char));
-    res = Rm_Api.rm_write_registers(robot_handle, params, hand_data);
-    if(res == 0)
-    {
-        set_hand_angle_result.data = true;
-        this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
-    }
-    else
-    {
-        set_hand_angle_result.data = false;
-        this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
-        RCLCPP_INFO (this->get_logger(),"Arm set hand angle error code is %d\n", res);
-    }
-
-    // for (int i = 0; i < 6; i++) {
-    //     uint32_t res = 0;
-    //     res = Rm_Api.rm_write_single_register(robot_handle, {.port = 1, .address = 1486 + 2 * i, .device = 1, .num = 1}, hand_angle[i]);
-    //     if(res == 0)
-    //     {
-    //         set_hand_angle_result.data = true;
-    //         this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
-    //     }
-    //     else
-    //     {
-    //         set_hand_angle_result.data = false;
-    //         this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
-    //         RCLCPP_INFO (this->get_logger(),"Arm set hand angle error code is %d, id is %d\n", res, i);
-    //     }
+    // for(int i = 0;i<6;i++)
+    // {
+    //     // hand_data[i * 2] = msg->hand_angle[i] & 0xFF;
+    //     // hand_data[i * 2 + 1] = (msg->hand_angle[i] >> 8) & 0xFF;
+    //     hand_data[i] = msg->hand_angle[i] & 0xFF;
     // }
+    // RCLCPP_INFO (this->get_logger(),"Arm set hand angle %d, %d, %d, %d, %d, %d\n", msg->hand_angle[0], msg->hand_angle[1], msg->hand_angle[2], msg->hand_angle[3], msg->hand_angle[4], msg->hand_angle[5]);
+    // RCLCPP_INFO (this->get_logger(),"Arm set hand data %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d\n", hand_data[0], hand_data[1], hand_data[2], hand_data[3], hand_data[4], hand_data[5], hand_data[6], hand_data[7], hand_data[8], hand_data[9], hand_data[10], hand_data[11]);
+    // res = Rm_Api.rm_write_registers(robot_handle, params, hand_data);
+    // if(res == 0)
+    // {
+    //     set_hand_angle_result.data = true;
+    //     this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
+    // }
+    // else
+    // {
+    //     set_hand_angle_result.data = false;
+    //     this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
+    //     RCLCPP_INFO (this->get_logger(),"Arm set hand angle error code is %d\n", res);
+    // }
+
+    for (int i = 0; i < 6; i++) {
+        uint32_t res = 0;
+        res = Rm_Api.rm_write_single_register(robot_handle, {.port = 1, .address = 1486 + 2 * i, .device = 1, .num = 1}, msg->hand_angle[i]);
+        if(res == 0)
+        {
+            set_hand_angle_result.data = true;
+            this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
+        }
+        else
+        {
+            set_hand_angle_result.data = false;
+            this->Set_Hand_Angle_Result->publish(set_hand_angle_result);
+            RCLCPP_INFO (this->get_logger(),"Arm set hand angle error code is %d, finger id is %d\n", res, i);
+        }
+    }
 }
 
 void RmArm::Arm_Set_Hand_Speed_Callback(const rm_ros_interfaces::msg::Handspeed::SharedPtr msg)

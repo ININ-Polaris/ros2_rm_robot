@@ -377,7 +377,7 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
             Udp_RM_Joint.zero_force[i] = data.force_sensor.zero_force[i];
         }
     }
-    if(udp_hand_g == true)
+    if(udp_hand_g)
     {
         for(int i = 0; i < 6; i++)
         {
@@ -389,7 +389,7 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
         Udp_RM_Joint.hand_err = data.handState.hand_err;
     }
     
-    if(rm_plus_base_g == true)
+    if(rm_plus_base_g)
     {
         for(int i = 0; i < 10; i++)
         {
@@ -428,7 +428,7 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
         Udp_RM_Joint.udp_rm_plus_base_info.hand = data.plus_base_info.hand;
     }
 
-    if(rm_plus_state_g == true)
+    if(rm_plus_state_g)
     {
         Udp_RM_Joint.udp_rm_plus_state_info.sys_state = data.plus_state_info.sys_state;
         for(int i = 0; i < 12; i++)
