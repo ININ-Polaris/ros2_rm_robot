@@ -41,8 +41,19 @@ if(BUILD_TESTING)
   #set(ament_cmake_cpplint_FOUND TRUE)
   ament_lint_auto_find_test_dependencies()
 endif()
-add_executable(rm_driver src/rm_driver.cpp)
 
+add_executable(rm_driver 
+  src/rm_driver.cpp
+  src/rm_driver_force_position_move.cpp
+  src/rm_driver_frame.cpp
+  src/rm_driver_gripper.cpp
+  src/rm_driver_hand.cpp
+  src/rm_driver_lift.cpp
+  src/rm_driver_move.cpp
+  src/rm_driver_plus.cpp
+  src/rm_driver_teach.cpp
+  src/rm_driver_utils.cpp  
+)
 
 set(RM_STATIC_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
  

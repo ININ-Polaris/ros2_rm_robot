@@ -12,6 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef _RM_DRIVER
+#define _RM_DRIVER
+
+#pragma once
+
 #include <iostream>
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp/clock.hpp" 
@@ -96,29 +101,29 @@ void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data);
 //ctrl+c执行程序
 static void my_handler(int sig);
 //机械臂型号信息
-int realman_arm;
+extern int realman_arm;
 //tcp ip
-char* tcp_ip;
+extern char* tcp_ip;
 //tcp port
-int tcp_port;
+extern int tcp_port;
 //udp hz
-int udp_cycle_g = 5;
+extern int udp_cycle_g;
 //arm dof
-int arm_dof_g = 6;
+extern int arm_dof_g;
 //ctrl+c触发信号
-bool ctrl_flag = false;
+extern bool ctrl_flag;
 // 灵巧手数据发布
-bool udp_hand_g = false;
+extern bool udp_hand_g;
 // 末端设备基础信息发布
-bool rm_plus_base_g = false;
+extern bool rm_plus_base_g;
 // 末端设备实时信息
-bool rm_plus_state_g = false;
+extern bool rm_plus_state_g;
 //api类
-RM_Service Rm_Api;
+extern RM_Service Rm_Api;
 //机械臂TCp网络通信套接字
 // SOCKHANDLE m_sockhand = -1;
 //机械臂控制句柄
-rm_robot_handle *robot_handle;
+extern rm_robot_handle *robot_handle;
 
 //末端设备基础信息
 typedef struct{
@@ -204,31 +209,32 @@ typedef struct
     RM_PLUS_BASE_INFO udp_rm_plus_base_info;    //末端设备实时信息
     RM_ERR udp_rm_err;
 } JOINT_STATE_VALUE;
-JOINT_STATE_VALUE Udp_RM_Joint;
 
-std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
-std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
-std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
-sensor_msgs::msg::JointState udp_real_joint_;                       //关节角度
-geometry_msgs::msg::Pose udp_arm_pose_;                             //位姿
-rm_ros_interfaces::msg::Sixforce udp_sixforce_;                     //六维力传感器原始数据
-rm_ros_interfaces::msg::Sixforce udp_zeroforce_;                    //六维力传感器转化后数据
-rm_ros_interfaces::msg::Sixforce udp_oneforce_;                     //一维力传感器原始数据
-rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;                 //一维力传感器转化后数据
-rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_;       //关节报错数据
-rm_ros_interfaces::msg::Handstatus udp_hand_status_;
-rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;        //机械臂原始数据（角度+欧拉角）
-rm_ros_interfaces::msg::Armstate Arm_state;                         //机械臂数据（弧度+四元数）
-rm_ros_interfaces::msg::Armcurrentstatus udp_arm_current_status_;   //
-rm_ros_interfaces::msg::Jointcurrent udp_joint_current_;            //
-rm_ros_interfaces::msg::Jointenflag udp_joint_en_flag_;
-rm_ros_interfaces::msg::Jointposeeuler udp_joint_pose_euler_;
-rm_ros_interfaces::msg::Jointspeed udp_joint_speed_;
-rm_ros_interfaces::msg::Jointtemperature udp_joint_temperature_; 
-rm_ros_interfaces::msg::Jointvoltage udp_joint_voltage_;
-rm_ros_interfaces::msg::Rmplusbase udp_rm_plus_base_;                   //末端设备基础信息
-rm_ros_interfaces::msg::Rmplusstate udp_rm_plus_state_;                 //末端设备实时信息
-rm_ros_interfaces::msg::Rmerr udp_rm_err_;                              //udp报错信息
+extern JOINT_STATE_VALUE Udp_RM_Joint;
+
+extern std_msgs::msg::UInt16 sys_err_;                                     //系统错误信息
+extern std_msgs::msg::UInt16 arm_err_;                                     //机械臂错误信息
+extern std_msgs::msg::UInt16 arm_coordinate_;                              //六维力基准坐标系
+extern sensor_msgs::msg::JointState udp_real_joint_;                       //关节角度
+extern geometry_msgs::msg::Pose udp_arm_pose_;                             //位姿
+extern rm_ros_interfaces::msg::Sixforce udp_sixforce_;                     //六维力传感器原始数据
+extern rm_ros_interfaces::msg::Sixforce udp_zeroforce_;                    //六维力传感器转化后数据
+extern rm_ros_interfaces::msg::Sixforce udp_oneforce_;                     //一维力传感器原始数据
+extern rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;                 //一维力传感器转化后数据
+extern rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_;       //关节报错数据
+extern rm_ros_interfaces::msg::Handstatus udp_hand_status_;
+extern rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;        //机械臂原始数据（角度+欧拉角）
+extern rm_ros_interfaces::msg::Armstate Arm_state;                         //机械臂数据（弧度+四元数）
+extern rm_ros_interfaces::msg::Armcurrentstatus udp_arm_current_status_;   //
+extern rm_ros_interfaces::msg::Jointcurrent udp_joint_current_;            //
+extern rm_ros_interfaces::msg::Jointenflag udp_joint_en_flag_;
+extern rm_ros_interfaces::msg::Jointposeeuler udp_joint_pose_euler_;
+extern rm_ros_interfaces::msg::Jointspeed udp_joint_speed_;
+extern rm_ros_interfaces::msg::Jointtemperature udp_joint_temperature_; 
+extern rm_ros_interfaces::msg::Jointvoltage udp_joint_voltage_;
+extern rm_ros_interfaces::msg::Rmplusbase udp_rm_plus_base_;                   //末端设备基础信息
+extern rm_ros_interfaces::msg::Rmplusstate udp_rm_plus_state_;                 //末端设备实时信息
+extern rm_ros_interfaces::msg::Rmerr udp_rm_err_;                              //udp报错信息
 
 class RmArm: public rclcpp::Node
 {
@@ -620,4 +626,4 @@ private:
     char udp_socket_buffer[1000];
 
 };
-
+#endif
