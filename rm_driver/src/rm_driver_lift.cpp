@@ -50,7 +50,7 @@ void RmArm::Arm_Set_Lift_Height_Callback(const rm_ros_interfaces::msg::Liftheigh
     height = msg->height;
     block = msg->block;
     // res = Rm_Api.Service_Set_Lift_Height(m_sockhand, height, speed, block);
-    res = Rm_Api.rm_set_lift_height(robot_handle, speed, height, block);
+    res = Rm_Api.rm_set_lift_height(robot_handle, speed, height, static_cast<int>(block));
     if(res == 0)
     {
         set_lift_height_result.data = true;

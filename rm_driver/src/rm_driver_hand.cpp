@@ -77,7 +77,7 @@ void RmArm::Arm_Set_Hand_Angle_Callback(const rm_ros_interfaces::msg::Handangle:
     params.port = 1;
     params.address = 1486;
     params.device = 1;
-    params.num = 6;
+    params.num = 1;
     // bool block;
     std_msgs::msg::Bool set_hand_angle_result;
     // for(int i = 0;i<6;i++)
@@ -103,7 +103,7 @@ void RmArm::Arm_Set_Hand_Angle_Callback(const rm_ros_interfaces::msg::Handangle:
 
     for (int i = 0; i < 6; i++) {
         uint32_t res = 0;
-        res = Rm_Api.rm_write_single_register(robot_handle, {.port = 1, .address = 1486 + 2 * i, .device = 1, .num = 1}, msg->hand_angle[i]);
+        res = Rm_Api.rm_write_single_register(robot_handle, params, msg->hand_angle[i]);
         if(res == 0)
         {
             set_hand_angle_result.data = true;
@@ -174,7 +174,7 @@ void RmArm::Arm_Set_Hand_Follow_Angle_Callback(const rm_ros_interfaces::msg::Han
     {
         angle[i] = msg->hand_angle[i];
     }
-    block = msg->block;
+    block = static_cast<int>(msg->block);
     // res = Rm_Api.Service_Set_Hand_Follow_Angle(m_sockhand, angle, block);
     res = Rm_Api.rm_set_hand_follow_angle(robot_handle, angle, block);
     if(res == 0)
@@ -200,7 +200,7 @@ void RmArm::Arm_Set_Hand_Follow_Pos_Callback(const rm_ros_interfaces::msg::Handa
     {
         pos[i] = msg->hand_angle[i];
     }
-    block = msg->block;
+    block = static_cast<int>(msg->block);
     // res = Rm_Api.Service_Set_Hand_Follow_Pos(m_sockhand, pos, block);
     res = Rm_Api.rm_set_hand_follow_pos(robot_handle, pos, block);
     if(res == 0)

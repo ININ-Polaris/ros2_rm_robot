@@ -132,15 +132,15 @@ void RmArm::Arm_Set_Force_Postion_Callback(const rm_ros_interfaces::msg::Setforc
     int sensor;
     int mode;
     int direction;
-    int N;
+    int Force;
     // bool block;
     sensor = msg->sensor;
     mode = msg->mode;
     direction = msg->direction;
-    N = msg->n;
+    Force = msg->n;
     // block = msg->block;
     // res = Rm_Api.Service_Set_Force_Postion(m_sockhand, sensor, mode, direction, N, block);
-    res = Rm_Api.rm_set_force_position(robot_handle, sensor, mode, direction, N);
+    res = Rm_Api.rm_set_force_position(robot_handle, sensor, mode, direction, Force);
     if(res == 0)
     {
         arm_set_force_postion_result.data = true;

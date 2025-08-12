@@ -21,7 +21,7 @@ using namespace std::chrono_literals;
 void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
 {
     float joint[7];
-    int v;
+    int speed;
     int block;
     int32_t res;
     std_msgs::msg::UInt32 movej_data;
@@ -36,11 +36,11 @@ void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
     {
         joint[6] = msg->joint[6] * RAD_DEGREE;
     }
-    v = msg->speed;
+    speed = msg->speed;
     trajectory_connect = msg->trajectory_connect;
-    block = msg->block;
+    block = static_cast<int>(msg->block);
     //res = Rm_Api.Service_Movej_Cmd(m_sockhand, joint, v ,0, trajectory_connect, block);
-    res = Rm_Api.rm_movej(robot_handle, joint, v ,0, trajectory_connect, block);
+    res = Rm_Api.rm_movej(robot_handle, joint, speed ,0, trajectory_connect, block);
     movej_data.data = res;
     if(movej_data.data == 0)
     {
@@ -58,7 +58,7 @@ void RmArm::Arm_MoveJ_Callback(rm_ros_interfaces::msg::Movej::SharedPtr msg)
 void RmArm::Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg)
 {
     rm_pose_t pose;
-    int v;
+    int speed;
     bool block;
     int32_t res;
     std_msgs::msg::UInt32 movel_data;
@@ -79,11 +79,11 @@ void RmArm::Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg)
     pose.euler.rx = tarns_euler.rx;
     pose.euler.ry = tarns_euler.ry;
     pose.euler.rz = tarns_euler.rz;
-    v = msg->speed;
+    speed = msg->speed;
     block = msg->block;
     trajectory_connect = msg->trajectory_connect;
     // res = Rm_Api.Service_Movel_Cmd(m_sockhand, pose, v ,0, trajectory_connect, block);
-    res = Rm_Api.rm_movel(robot_handle, pose, v ,0, trajectory_connect, block);
+    res = Rm_Api.rm_movel(robot_handle, pose, speed ,0, trajectory_connect, static_cast<int>(block));
     movel_data.data = res;
     if(movel_data.data == 0)
     {
@@ -101,13 +101,17 @@ void RmArm::Arm_MoveL_Callback(rm_ros_interfaces::msg::Movel::SharedPtr msg)
 void RmArm::Arm_MoveC_Callback(rm_ros_interfaces::msg::Movec::SharedPtr msg)
 {
     
-    rm_pose_t pose_via, pose_to;
-    int v,loop;
+    rm_pose_t pose_via;
+    rm_pose_t pose_to;
+    int speed;
+    int loop;
     int32_t res;
     std_msgs::msg::UInt32 movec_data;
     std_msgs::msg::Bool movec_result;
-    rm_quat_t rec_pose_via, rec_pose_to;
-    rm_euler_t tarns_euler_via, tarns_euler_to;
+    rm_quat_t rec_pose_via;
+    rm_quat_t rec_pose_to;
+    rm_euler_t tarns_euler_via;
+    rm_euler_t tarns_euler_to;
     int trajectory_connect;
     bool block;
 
@@ -137,12 +141,12 @@ void RmArm::Arm_MoveC_Callback(rm_ros_interfaces::msg::Movec::SharedPtr msg)
     pose_to.euler.ry = tarns_euler_to.ry;
     pose_to.euler.rz = tarns_euler_to.rz;
 
-    v = msg->speed;
+    speed = msg->speed;
     loop = msg->loop;
     block = msg->block;
     trajectory_connect = msg->trajectory_connect;
     // res = Rm_Api.Service_Movec_Cmd(m_sockhand, pose_via, pose_to, v, 0, loop, trajectory_connect, block);
-    res = Rm_Api.rm_movec(robot_handle, pose_via, pose_to, v, 0, loop, trajectory_connect, block);
+    res = Rm_Api.rm_movec(robot_handle, pose_via, pose_to, speed, 0, loop, trajectory_connect, static_cast<int>(block));
     movec_data.data = res;
     if(movec_data.data == 0)
     {
@@ -303,7 +307,7 @@ void RmArm::Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg)
 {
     
     rm_pose_t pose;
-    int v;
+    int speed;
     bool block;
     int32_t res;
     std_msgs::msg::UInt32 movej_p_data;
@@ -324,11 +328,11 @@ void RmArm::Arm_MoveJ_P_Callback(rm_ros_interfaces::msg::Movejp::SharedPtr msg)
     pose.euler.rx = tarns_euler.rx;
     pose.euler.ry = tarns_euler.ry;
     pose.euler.rz = tarns_euler.rz;
-    v = msg->speed;
+    speed = msg->speed;
     trajectory_connect = msg->trajectory_connect;
     block = msg->block;
     // res = Rm_Api.Service_Movej_P_Cmd(m_sockhand, pose, v ,0, trajectory_connect, block);
-    res = Rm_Api.rm_movej_p(robot_handle, pose, v ,0, trajectory_connect, block);
+    res = Rm_Api.rm_movej_p(robot_handle, pose, speed ,0, trajectory_connect, block);
     movej_p_data.data = res;
     if(movej_p_data.data == 0)
     {

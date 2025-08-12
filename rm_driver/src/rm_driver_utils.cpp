@@ -33,21 +33,23 @@ void RmArm::Arm_Get_Realtime_Push_Callback(const std_msgs::msg::Empty::SharedPtr
         Setrealtime_msg.port = config.port;
         Setrealtime_msg.force_coordinate = config.force_coordinate;
         Setrealtime_msg.ip = config.ip;
-        Setrealtime_msg.hand_enable = config.custom_config.hand_state;
-        Setrealtime_msg.joint_speed_enable = config.custom_config.joint_speed;
-        Setrealtime_msg.lift_state_enable = config.custom_config.lift_state;
-        Setrealtime_msg.expand_state_enable = config.custom_config.expand_state;
-        Setrealtime_msg.arm_current_status_enable = config.custom_config.arm_current_status;
-        Setrealtime_msg.aloha_state_enable = config.custom_config.aloha_state;
-        Setrealtime_msg.plus_base_enable = config.custom_config.plus_base;
-        rm_plus_base_g = config.custom_config.plus_base;
-        Setrealtime_msg.plus_state_enable = config.custom_config.plus_state;
-        rm_plus_state_g = config.custom_config.plus_state;
-        udp_hand_g = config.custom_config.hand_state;
+        Setrealtime_msg.hand_enable = (config.custom_config.hand_state != 0);
+        Setrealtime_msg.joint_speed_enable = (config.custom_config.joint_speed != 0);
+        Setrealtime_msg.lift_state_enable = (config.custom_config.lift_state != 0);
+        Setrealtime_msg.expand_state_enable = (config.custom_config.expand_state != 0);
+        Setrealtime_msg.arm_current_status_enable = (config.custom_config.arm_current_status != 0);
+        Setrealtime_msg.aloha_state_enable = (config.custom_config.aloha_state != 0);
+        Setrealtime_msg.plus_base_enable = (config.custom_config.plus_base != 0);
+        rm_plus_base_g = (config.custom_config.plus_base != 0);
+        Setrealtime_msg.plus_state_enable = (config.custom_config.plus_state != 0);
+        rm_plus_state_g = (config.custom_config.plus_state != 0);
+        udp_hand_g = (config.custom_config.hand_state != 0);
         this->Get_Realtime_Push_Result->publish(Setrealtime_msg);
     }
-    else
-    RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+    else 
+    {
+        RCLCPP_INFO (this->get_logger(),"The error code is %d\n",res);
+    }
 }
 
 void RmArm::Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setrealtimepush::SharedPtr msg)
@@ -61,16 +63,16 @@ void RmArm::Arm_Set_Realtime_Push_Callback(const rm_ros_interfaces::msg::Setreal
     config.enable = true;
     strcpy(config.ip,msg->ip.data());
     rm_udp_custom_config_t config_enable;
-    config_enable.expand_state = msg->expand_state_enable;
-    config_enable.hand_state = msg->hand_enable;
+    config_enable.expand_state = static_cast<int>(msg->expand_state_enable);
+    config_enable.hand_state = static_cast<int>(msg->hand_enable);
     udp_hand_g = msg->hand_enable;
-    config_enable.joint_speed = msg->joint_speed_enable;
-    config_enable.lift_state = msg->lift_state_enable;
-    config_enable.arm_current_status = msg->arm_current_status_enable;
-    config_enable.aloha_state = msg->aloha_state_enable;
-    config_enable.plus_base = msg->plus_base_enable;
+    config_enable.joint_speed = static_cast<int>(msg->joint_speed_enable);
+    config_enable.lift_state = static_cast<int>(msg->lift_state_enable);
+    config_enable.arm_current_status = static_cast<int>(msg->arm_current_status_enable);
+    config_enable.aloha_state = static_cast<int>(msg->aloha_state_enable);
+    config_enable.plus_base = static_cast<int>(msg->plus_base_enable);
     rm_plus_base_g = msg->plus_base_enable;
-    config_enable.plus_state = msg->plus_state_enable;
+    config_enable.plus_state = static_cast<int>(msg->plus_state_enable);
     rm_plus_state_g = msg->plus_state_enable;
     config.custom_config = config_enable;
     // res = Rm_Api.Service_Set_Realtime_Push(m_sockhand, config);
@@ -99,14 +101,14 @@ void RmArm::Set_UDP_Configuration(int udp_cycle, int udp_port, int udp_force_coo
     strcpy(config.ip,udp_ip.data());
     rm_udp_custom_config_t config_enable;
     config_enable.expand_state = 0;
-    config_enable.hand_state = hand;
+    config_enable.hand_state = static_cast<int>(hand);
     udp_hand_g = hand;
     config_enable.joint_speed = 0;
     config_enable.lift_state = 0;
     config_enable.aloha_state = 0;
-    config_enable.plus_base = rm_plus_base;
+    config_enable.plus_base = static_cast<int>(rm_plus_base);
     rm_plus_base_g = rm_plus_base;
-    config_enable.plus_state = rm_plus_state;
+    config_enable.plus_state = static_cast<int>(rm_plus_state);
     rm_plus_state_g = rm_plus_state;
     config_enable.arm_current_status = 0;
     config.custom_config = config_enable;
@@ -208,7 +210,6 @@ void RmArm::Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::Share
     std_msgs::msg::Bool get_current_arm_State_result;
     rm_euler_t euler;
     rm_quat_t quat;
-    int i;
     // res = Rm_Api.Service_Get_Current_Arm_State(m_sockhand, joint, &pose, &Err, &Err_len);
     res = Rm_Api.rm_get_current_arm_state(robot_handle, &current_state);
     if(res == 0)
@@ -217,7 +218,7 @@ void RmArm::Arm_Get_Current_Arm_State_Callback(const std_msgs::msg::Empty::Share
         
         Arm_original_state.dof = 6;
         Arm_state.dof = 6;
-        for(i=0;i<6;i++)
+        for(int i=0;i<6;i++)
         {
             Arm_original_state.joint[i] = current_state.joint[i];
             Arm_state.joint[i] = current_state.joint[i] * DEGREE_RAD;
@@ -335,153 +336,4 @@ void RmArm::Arm_Get_Force_Data_Callback(const std_msgs::msg::Empty::SharedPtr ms
     {
         RCLCPP_INFO (this->get_logger(),"Arm get force data error code is %d\n",res);
     }
-}
-
-void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data)
-{
-    for(int i = 0; i < 6; i++)
-    {
-        Udp_RM_Joint.joint[i] = data.joint_status.joint_position[i];
-        Udp_RM_Joint.err_flag[i] = data.joint_status.joint_err_code[i];
-        Udp_RM_Joint.joint_current[i] = data.joint_status.joint_current[i];
-        Udp_RM_Joint.en_flag[i] = data.joint_status.joint_en_flag[i];
-        Udp_RM_Joint.joint_speed[i] = data.joint_status.joint_speed[i];
-        Udp_RM_Joint.joint_temperature[i] = data.joint_status.joint_temperature[i];
-        Udp_RM_Joint.joint_voltage[i] = data.joint_status.joint_voltage[i];
-    }
-    if(arm_dof_g == 7)
-    {
-        Udp_RM_Joint.joint[6] = data.joint_status.joint_position[6];
-        Udp_RM_Joint.err_flag[6] = data.joint_status.joint_err_code[6];
-        Udp_RM_Joint.joint_current[6] = data.joint_status.joint_current[6];
-        Udp_RM_Joint.en_flag[6] = data.joint_status.joint_en_flag[6];
-        Udp_RM_Joint.joint_speed[6] = data.joint_status.joint_speed[6];
-        Udp_RM_Joint.joint_temperature[6] = data.joint_status.joint_temperature[6];
-        Udp_RM_Joint.joint_voltage[6] = data.joint_status.joint_voltage[6];
-    }
-    if(Udp_RM_Joint.udp_rm_err.err_len != data.err.err_len)
-    {
-        Udp_RM_Joint.udp_rm_err.err_len = data.err.err_len;
-        Udp_RM_Joint.udp_rm_err.err.resize(Udp_RM_Joint.udp_rm_err.err_len);
-        for(int i = 0; i<Udp_RM_Joint.udp_rm_err.err_len; i++)
-        {
-            Udp_RM_Joint.udp_rm_err.err[i] = data.err.err[i];
-        }
-    }
-
-    if(Udp_RM_Joint.control_version == 2)
-    {
-        for(int i = 0; i < 6; i++)
-        {
-            Udp_RM_Joint.six_force[i] = data.force_sensor.force[i];
-            Udp_RM_Joint.zero_force[i] = data.force_sensor.zero_force[i];
-        }
-    }
-    if(udp_hand_g)
-    {
-        for(int i = 0; i < 6; i++)
-        {
-            Udp_RM_Joint.hand_angle[i] = data.handState.hand_angle[i];
-            Udp_RM_Joint.hand_force[i] = data.handState.hand_force[i];
-            Udp_RM_Joint.hand_pos[i] = data.handState.hand_pos[i];
-            Udp_RM_Joint.hand_state[i] = data.handState.hand_state[i];
-        }
-        Udp_RM_Joint.hand_err = data.handState.hand_err;
-    }
-    
-    if(rm_plus_base_g)
-    {
-        for(int i = 0; i < 10; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.manu[i] = data.plus_base_info.manu[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.hv[i] = data.plus_base_info.hv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.sv[i] = data.plus_base_info.sv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.bv[i] = data.plus_base_info.bv[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_low[i] = data.plus_base_info.angle_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_up[i] = data.plus_base_info.angle_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_up[i] = data.plus_base_info.pos_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_low[i] = data.plus_base_info.pos_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_up[i] = data.plus_base_info.speed_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_low[i] = data.plus_base_info.speed_low[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_up[i] = data.plus_base_info.force_up[i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_low[i] = data.plus_base_info.force_low[i];
-        }
-        for(int i = 0; i < 2; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_low[10+i] = data.plus_base_info.angle_low[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.angle_up[10+i] = data.plus_base_info.angle_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_up[10+i] = data.plus_base_info.pos_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.pos_low[10+i] = data.plus_base_info.pos_low[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_up[10+i] = data.plus_base_info.speed_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.speed_low[10+i] = data.plus_base_info.speed_low[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_up[10+i] = data.plus_base_info.force_up[10+i];
-            Udp_RM_Joint.udp_rm_plus_base_info.force_low[10+i] = data.plus_base_info.force_low[10+i];
-        }
-        Udp_RM_Joint.udp_rm_plus_base_info.id = data.plus_base_info.id;
-        Udp_RM_Joint.udp_rm_plus_base_info.dof = data.plus_base_info.dof;
-        Udp_RM_Joint.udp_rm_plus_base_info.check = data.plus_base_info.check;
-        Udp_RM_Joint.udp_rm_plus_base_info.bee = data.plus_base_info.bee;
-        Udp_RM_Joint.udp_rm_plus_base_info.force = data.plus_base_info.force;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch = data.plus_base_info.touch;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch_num = data.plus_base_info.touch_num;
-        Udp_RM_Joint.udp_rm_plus_base_info.touch_sw = data.plus_base_info.touch_sw;
-        Udp_RM_Joint.udp_rm_plus_base_info.hand = data.plus_base_info.hand;
-    }
-
-    if(rm_plus_state_g)
-    {
-        Udp_RM_Joint.udp_rm_plus_state_info.sys_state = data.plus_state_info.sys_state;
-        for(int i = 0; i < 12; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_state[i] = data.plus_state_info.dof_state[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.dof_err[i] = data.plus_state_info.dof_err[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.pos[i] = data.plus_state_info.pos[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.speed[i] = data.plus_state_info.speed[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.angle[i] = data.plus_state_info.angle[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.current[i] = data.plus_state_info.current[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i] = data.plus_state_info.normal_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i] = data.plus_state_info.tangential_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i] = data.plus_state_info.tangential_force_dir[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tsa[i] = data.plus_state_info.tsa[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tma[i] = data.plus_state_info.tma[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i] = data.plus_state_info.touch_data[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.force[i] = data.plus_state_info.force[i];
-        }
-        for(int i = 12; i < 18; i++)
-        {
-            Udp_RM_Joint.udp_rm_plus_state_info.normal_force[i] = data.plus_state_info.normal_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force[i] = data.plus_state_info.tangential_force[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.tangential_force_dir[i] = data.plus_state_info.tangential_force_dir[i];
-            Udp_RM_Joint.udp_rm_plus_state_info.touch_data[i] = data.plus_state_info.touch_data[i];
-        }
-    }
-
-    Udp_RM_Joint.joint_position[0] = data.waypoint.position.x;
-    Udp_RM_Joint.joint_position[1] = data.waypoint.position.y;
-    Udp_RM_Joint.joint_position[2] = data.waypoint.position.z;
-    
-    Udp_RM_Joint.joint_quat[0] = data.waypoint.quaternion.w;
-    Udp_RM_Joint.joint_quat[1] = data.waypoint.quaternion.x;
-    Udp_RM_Joint.joint_quat[2] = data.waypoint.quaternion.y;
-    Udp_RM_Joint.joint_quat[3] = data.waypoint.quaternion.z;
-
-    Udp_RM_Joint.joint_euler[0] = data.waypoint.euler.rx;
-    Udp_RM_Joint.joint_euler[1] = data.waypoint.euler.ry;
-    Udp_RM_Joint.joint_euler[2] = data.waypoint.euler.rz;
-
-    Udp_RM_Joint.arm_current_status = data.arm_current_status;
-    //std::cout<<"callback arm_current_status is "<<Udp_RM_Joint.arm_current_status<<std::endl;
-
-    if(Udp_RM_Joint.control_version == 3)
-    {
-        Udp_RM_Joint.one_force = data.force_sensor.force[0];
-        Udp_RM_Joint.one_zero_force = data.force_sensor.zero_force[0];
-    }
-    // Udp_RM_Joint.sys_err = data.sys_err;
-    // Udp_RM_Joint.arm_err = data.arm_err;
-    Udp_RM_Joint.coordinate = data.force_sensor.coordinate;
-    // if(udp_hand_g == true)
-    // {
-    
-    // }
 }

@@ -92,16 +92,15 @@ void RmArm::Arm_Get_All_Tool_Frame_Callback(const std_msgs::msg::Empty::SharedPt
     rm_ros_interfaces::msg::Getallframe all_tool_frame;
     int len=-1;
     copy = msg;
-    int i;
     res = Rm_Api.rm_get_total_tool_frame(robot_handle, frame_names, &len);
     if(res == 0 && len <= 10)
     {
-        for(i = 0;i<len;i++)
+        for(int i = 0;i<len;i++)
         {
             // RCLCPP_INFO (this->get_logger(),"Arm all tool frame is %s\n",frame_names[i].name);
             all_tool_frame.frame_name[i] =std::string(frame_names[i].name);
         }
-        for(i = len;i<10;i++)
+        for(int i = len;i<10;i++)
         {
             all_tool_frame.frame_name[i] = "";
         }
@@ -120,8 +119,7 @@ void RmArm::Arm_Get_All_Work_Frame_Callback(const std_msgs::msg::Empty::SharedPt
     int32_t res;
     rm_ros_interfaces::msg::Getallframe all_work_frame;
     int len=-1;
-    int i;
-    // for(i = 0;i<=9;i++)
+    // for(int i = 0;i<=9;i++)
     // {
     //     memset(name[i].name,'\0',sizeof(name[i].name));
     // }
@@ -130,12 +128,12 @@ void RmArm::Arm_Get_All_Work_Frame_Callback(const std_msgs::msg::Empty::SharedPt
     res = Rm_Api.rm_get_total_work_frame(robot_handle, frame_names, &len);
     if(res == 0 && len <= 10)
     {
-        for(i = 0;i<=len;i++)
+        for(int i = 0;i<=len;i++)
         {
             // RCLCPP_INFO (this->get_logger(),"Arm all work frame is %s\n",frame_names[i].name);
             all_work_frame.frame_name[i] = std::string(frame_names[i].name);
         }
-        for(i = len;i<10;i++)
+        for(int i = len;i<10;i++)
         {
             // RCLCPP_INFO (this->get_logger(),"Arm all work frame is %s\n",frame_names[i].name);
             all_work_frame.frame_name[i] = "";

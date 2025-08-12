@@ -95,11 +95,7 @@
 #define RAD_DEGREE 57.295791433
 #define DEGREE_RAD 0.01745
 using namespace std::chrono_literals;
-//udp数据处理函数
-// void Udp_RobotStatuscallback(RobotStatus Udp_RM_Callback);
-void Udp_Robot_Status_Callback(rm_realtime_arm_joint_state_t data);
-//ctrl+c执行程序
-static void my_handler(int sig);
+
 //机械臂型号信息
 extern int realman_arm;
 //tcp ip

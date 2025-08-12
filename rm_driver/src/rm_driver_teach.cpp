@@ -22,7 +22,7 @@ void RmArm::Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedP
 {
     int num;
     int direction;
-    int v;
+    int velocity;
     // bool block;
     int32_t res;
     std_msgs::msg::UInt32 joint_teach_data;
@@ -30,11 +30,11 @@ void RmArm::Set_Joint_Teach_Callback(rm_ros_interfaces::msg::Jointteach::SharedP
 
     num = msg->num;
     direction = msg->direction;
-    v = msg->speed;
+    velocity = msg->speed;
     // block = msg->block;
 
     // res = Rm_Api.Service_Joint_Teach_Cmd(m_sockhand, num, direction, v , block);
-    res = Rm_Api.rm_set_joint_teach(robot_handle, num, direction, v);
+    res = Rm_Api.rm_set_joint_teach(robot_handle, num, direction, velocity);
     joint_teach_data.data = res;
     if(joint_teach_data.data == 0)
     {
@@ -53,7 +53,7 @@ void RmArm::Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr m
 {
     int type;
     int direction;
-    int v;
+    int velocity;
     // bool block;
     int32_t res;
     std_msgs::msg::UInt32 pos_teach_data;
@@ -61,11 +61,11 @@ void RmArm::Set_Pos_Teach_Callback(rm_ros_interfaces::msg::Posteach::SharedPtr m
 
     type = msg->type;
     direction = msg->direction;
-    v = msg->speed;
+    velocity = msg->speed;
     // block = msg->block;
 
     // res = Rm_Api.Service_Pos_Teach_Cmd(m_sockhand, (POS_TEACH_MODES)type, direction, v , block);
-    res = Rm_Api.rm_set_pos_teach(robot_handle, (rm_pos_teach_type_e)type, direction, v);
+    res = Rm_Api.rm_set_pos_teach(robot_handle, (rm_pos_teach_type_e)type, direction, velocity);
     pos_teach_data.data = res;
     if(pos_teach_data.data == 0)
     {
@@ -84,7 +84,7 @@ void RmArm::Set_Ort_Teach_Callback(rm_ros_interfaces::msg::Ortteach::SharedPtr m
 {
     int type;
     int direction;
-    int v;
+    int velocity;
     // bool block;
     int32_t res;
     std_msgs::msg::UInt32 ort_teach_data;
@@ -92,11 +92,11 @@ void RmArm::Set_Ort_Teach_Callback(rm_ros_interfaces::msg::Ortteach::SharedPtr m
 
     type = msg->type;
     direction = msg->direction;
-    v = msg->speed;
+    velocity = msg->speed;
     // block = msg->block;
 
     // res = Rm_Api.Service_Ort_Teach_Cmd(m_sockhand, (ORT_TEACH_MODES)type, direction, v , block);
-    res = Rm_Api.rm_set_ort_teach(robot_handle, (rm_ort_teach_type_e)type, direction, v );
+    res = Rm_Api.rm_set_ort_teach(robot_handle, (rm_ort_teach_type_e)type, direction, velocity );
     ort_teach_data.data = res;
     if(ort_teach_data.data == 0)
     {
