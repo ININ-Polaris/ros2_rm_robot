@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "rm_driver.h"
 #include <cstdint>
+#include <rm_driver/rm_driver.h>
 #include <utility>
 
-//机械臂型号信息
+// 机械臂型号信息
 int realman_arm;
 // tcp ip
 char *tcp_ip;
@@ -36,24 +36,24 @@ bool rm_plus_base_g = false;
 bool rm_plus_state_g = false;
 // api类
 RM_Service Rm_Api;
-//机械臂TCp网络通信套接字
-// SOCKHANDLE m_sockhand = -1;
-//机械臂控制句柄
+// 机械臂TCp网络通信套接字
+//  SOCKHANDLE m_sockhand = -1;
+// 机械臂控制句柄
 rm_robot_handle *robot_handle;
 
-std_msgs::msg::UInt16 sys_err_;                               //系统错误信息
-std_msgs::msg::UInt16 arm_err_;                               //机械臂错误信息
-std_msgs::msg::UInt16 arm_coordinate_;                        //六维力基准坐标系
-sensor_msgs::msg::JointState udp_real_joint_;                 //关节角度
-geometry_msgs::msg::Pose udp_arm_pose_;                       //位姿
-rm_ros_interfaces::msg::Sixforce udp_sixforce_;               //六维力传感器原始数据
-rm_ros_interfaces::msg::Sixforce udp_zeroforce_;              //六维力传感器转化后数据
-rm_ros_interfaces::msg::Sixforce udp_oneforce_;               //一维力传感器原始数据
-rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;           //一维力传感器转化后数据
-rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_; //关节报错数据
+std_msgs::msg::UInt16 sys_err_;                               // 系统错误信息
+std_msgs::msg::UInt16 arm_err_;                               // 机械臂错误信息
+std_msgs::msg::UInt16 arm_coordinate_;                        // 六维力基准坐标系
+sensor_msgs::msg::JointState udp_real_joint_;                 // 关节角度
+geometry_msgs::msg::Pose udp_arm_pose_;                       // 位姿
+rm_ros_interfaces::msg::Sixforce udp_sixforce_;               // 六维力传感器原始数据
+rm_ros_interfaces::msg::Sixforce udp_zeroforce_;              // 六维力传感器转化后数据
+rm_ros_interfaces::msg::Sixforce udp_oneforce_;               // 一维力传感器原始数据
+rm_ros_interfaces::msg::Sixforce udp_onezeroforce_;           // 一维力传感器转化后数据
+rm_ros_interfaces::msg::Jointerrorcode udp_joint_error_code_; // 关节报错数据
 rm_ros_interfaces::msg::Handstatus udp_hand_status_;
-rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;      //机械臂原始数据（角度+欧拉角）
-rm_ros_interfaces::msg::Armstate Arm_state;                       //机械臂数据（弧度+四元数）
+rm_ros_interfaces::msg::Armoriginalstate Arm_original_state;      // 机械臂原始数据（角度+欧拉角）
+rm_ros_interfaces::msg::Armstate Arm_state;                       // 机械臂数据（弧度+四元数）
 rm_ros_interfaces::msg::Armcurrentstatus udp_arm_current_status_; //
 rm_ros_interfaces::msg::Jointcurrent udp_joint_current_;          //
 rm_ros_interfaces::msg::Jointenflag udp_joint_en_flag_;
@@ -61,8 +61,8 @@ rm_ros_interfaces::msg::Jointposeeuler udp_joint_pose_euler_;
 rm_ros_interfaces::msg::Jointspeed udp_joint_speed_;
 rm_ros_interfaces::msg::Jointtemperature udp_joint_temperature_;
 rm_ros_interfaces::msg::Jointvoltage udp_joint_voltage_;
-rm_ros_interfaces::msg::Rmplusbase udp_rm_plus_base_;   //末端设备基础信息
-rm_ros_interfaces::msg::Rmplusstate udp_rm_plus_state_; //末端设备实时信息
+rm_ros_interfaces::msg::Rmplusbase udp_rm_plus_base_;   // 末端设备基础信息
+rm_ros_interfaces::msg::Rmplusstate udp_rm_plus_state_; // 末端设备实时信息
 rm_ros_interfaces::msg::Rmerr udp_rm_err_;              // udp报错信息
 
 JOINT_STATE_VALUE Udp_RM_Joint;
@@ -75,10 +75,10 @@ void my_handler(int sig) // can be called asynchronously
   ctrl_flag = true; // set flag
 }
 
-//连接机械臂网络
+// 连接机械臂网络
 auto Arm_Socket_Start_Connect() -> int {
-  int Arm_Socket;  //机械臂TCp网络通信套接字
-  int Arm_connect; //机械臂TCP连接状态
+  int Arm_Socket;  // 机械臂TCp网络通信套接字
+  int Arm_connect; // 机械臂TCP连接状态
 
   Arm_Socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (Arm_Socket <= 0) {
@@ -128,7 +128,7 @@ auto Arm_Socket_Start_Connect() -> int {
       int err = -1;
       socklen_t len = sizeof(int);
 
-      if (getsockopt(Arm_Socket, SOL_SOCKET, SO_ERROR, &err, &len) < 0) //两种错误处理方式
+      if (getsockopt(Arm_Socket, SOL_SOCKET, SO_ERROR, &err, &len) < 0) // 两种错误处理方式
       {
         std::cout << "errno :" << errno << strerror(errno) << std::endl;
         close(Arm_Socket);
@@ -143,7 +143,7 @@ auto Arm_Socket_Start_Connect() -> int {
       }
     }
   }
-  fcntl(Arm_Socket, F_SETFL, old_flag); //最后恢复sock的阻塞属性。
+  fcntl(Arm_Socket, F_SETFL, old_flag); // 最后恢复sock的阻塞属性。
   close(Arm_Socket);
   return 0;
 }
@@ -530,26 +530,27 @@ UdpPublisherNode::UdpPublisherNode() : rclcpp::Node("udp_publish_node") {
   Heart_Timer = this->create_wall_timer(
       std::chrono::milliseconds(100), [this]() { this->heart_timer_callback(); }, callback_group_time2_);
   /********************************************************************UDP传输数据**********************************************************/
-  Joint_Position_Result = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10); //发布当前的关节角度
+  Joint_Position_Result = this->create_publisher<sensor_msgs::msg::JointState>("joint_states", 10); // 发布当前的关节角度
   Arm_Position_Result =
-      this->create_publisher<geometry_msgs::msg::Pose>("rm_driver/udp_arm_position", 10); //发布当前的关节姿态
+      this->create_publisher<geometry_msgs::msg::Pose>("rm_driver/udp_arm_position", 10); // 发布当前的关节姿态
   Six_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_six_force",
-                                                                              10); //发布当前的原始六维力数据
+                                                                              10); // 发布当前的原始六维力数据
   Six_Zero_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_six_zero_force",
-                                                                                   10); //发布当前标坐标系下六维力数据
+                                                                                   10); // 发布当前标坐标系下六维力数据
   One_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_force",
-                                                                              10); //发布当前的原始一维力数据
-  One_Zero_Force_Result = this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_zero_force",
-                                                                                   10); //发布当前目标坐标系下一维力数据
+                                                                              10); // 发布当前的原始一维力数据
+  One_Zero_Force_Result =
+      this->create_publisher<rm_ros_interfaces::msg::Sixforce>("rm_driver/udp_one_zero_force",
+                                                               10); // 发布当前目标坐标系下一维力数据
   Joint_Error_Code_Result = this->create_publisher<rm_ros_interfaces::msg::Jointerrorcode>(
-      "rm_driver/udp_joint_error_code", 10); //发布当前的关节错误码
+      "rm_driver/udp_joint_error_code", 10); // 发布当前的关节错误码
   // Sys_Err_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_sys_err", 10); //发布当前的系统错误码
   Rm_Err_Result =
-      this->create_publisher<rm_ros_interfaces::msg::Rmerr>("rm_driver/udp_rm_err", 10); //发布当前的机械臂错误码
+      this->create_publisher<rm_ros_interfaces::msg::Rmerr>("rm_driver/udp_rm_err", 10); // 发布当前的机械臂错误码
   Arm_Coordinate_Result = this->create_publisher<std_msgs::msg::UInt16>("rm_driver/udp_arm_coordinate",
-                                                                        10); //发布当前六维力数据的基准坐标系
+                                                                        10); // 发布当前六维力数据的基准坐标系
   Hand_Status_Result =
-      this->create_publisher<rm_ros_interfaces::msg::Handstatus>("rm_driver/udp_hand_status", 10); //发布灵巧手状态数据
+      this->create_publisher<rm_ros_interfaces::msg::Handstatus>("rm_driver/udp_hand_status", 10); // 发布灵巧手状态数据
 
   Arm_Current_Status_Result =
       this->create_publisher<rm_ros_interfaces::msg::Armcurrentstatus>("rm_driver/udp_arm_current_status", 10);
@@ -570,7 +571,7 @@ UdpPublisherNode::UdpPublisherNode() : rclcpp::Node("udp_publish_node") {
 RmArm::~RmArm() { Arm_Close(); }
 
 RmArm::RmArm() : rclcpp::Node("rm_driver") {
-  //参数初始化
+  // 参数初始化
   this->declare_parameter("arm_ip", "192.168.1.188");
   arm_ip_ = this->get_parameter("arm_ip").as_string();
 
@@ -693,7 +694,7 @@ RmArm::RmArm() : rclcpp::Node("rm_driver") {
   auto sub_opt4 = rclcpp::SubscriptionOptions();
   sub_opt4.callback_group = callback_group_sub4_;
 
-  Get_Arm_Version(); //获取机械臂版本
+  Get_Arm_Version(); // 获取机械臂版本
 
   Set_UDP_Configuration(udp_cycle_, udp_port_, udp_force_coordinate_, udp_ip_, udp_hand_, udp_rm_plus_base_,
                         udp_rm_plus_state_);

@@ -8,7 +8,7 @@ CompileFlags:
     - -I/home/nvidia/ros2_ws/src
 
     # C++标准
-    - -std=c++14
+    - -std=c++17
 
     # 定义宏
     - -DROS_DISTRO_HUMBLE
