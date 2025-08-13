@@ -1,0 +1,25 @@
+CompileFlags:
+  Add:
+    # ROS2 基础路径
+    - -I/opt/ros/humble/include
+
+    # 工作空间路径
+    # - -I/home/nvidia/ros2_ws/install/<package_name>/include
+    - -I/home/nvidia/ros2_ws/src
+
+    # C++标准
+    - -std=c++14
+
+    # 定义宏
+    - -DROS_DISTRO_HUMBLE
+    - -DRCUTILS_ENABLE_FAULT_INJECTION
+
+  Remove:
+    # 移除一些可能导致问题的编译选项
+    - -W*
+
+Diagnostics:
+  ClangTidy:
+    Add: [performance-*, readability-*, modernize-*]
+    # 不检查魔法数字和后缀大写
+    Remove: [readability-magic-numbers, readability-uppercase-literal-suffix]
