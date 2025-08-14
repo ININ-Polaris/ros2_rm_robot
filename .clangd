@@ -22,4 +22,4 @@ Diagnostics:
   ClangTidy:
     Add: [performance-*, readability-*, modernize-*]
     # 不检查魔法数字和后缀大写
-    Remove: [readability-magic-numbers, readability-uppercase-literal-suffix]
+    Remove: [readability-magic-numbers, readability-uppercase-literal-suffix, readability-function-cognitive-complexity]
