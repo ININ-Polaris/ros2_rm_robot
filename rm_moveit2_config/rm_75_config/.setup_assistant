@@ -1,9 +1,9 @@
 moveit_setup_assistant_config:
   urdf:
     package: rm_description
-    relative_path: urdf/rm_75.urdf
+    relative_path: urdf/rm_75_left.urdf
   srdf:
-    relative_path: config/rm_75_description.srdf
+    relative_path: config/rm_75_description_left.srdf
   package_settings:
     author_name: Kaola
     author_email: Kaola@qq.com
