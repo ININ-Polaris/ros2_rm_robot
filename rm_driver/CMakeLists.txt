@@ -27,7 +27,6 @@ include_directories(
   ${PROJECT_SOURCE_DIR}/include
   ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}
 )
-link_directories(${catkin_LIB_DIRS} ${PROJECT_SOURCE_DIR}/lib)
 
 include_directories("/usr/local/lib")
 
@@ -60,14 +59,13 @@ set(RM_STATIC_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
 # link_directories(${catkin_LIB_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/lib/RM_Service)
 link_directories(${RM_STATIC_LIBRARY})
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(rm_driver
   ${PROJECT_SOURCE_DIR}/lib/libapi_cpp.so
 )
 
 ament_target_dependencies(rm_driver rclcpp std_msgs sensor_msgs rm_ros_interfaces)
 
-install(TARGETS  rm_driver  DESTINATION lib/${PROJECT_NAME})
+install(TARGETS rm_driver DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY launch config
-  DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY launch config DESTINATION share/${PROJECT_NAME})
 ament_package()
