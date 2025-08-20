@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot name="rm_75_dual" xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:property name="base_frame" default="lift" />
+
+    <xacro:property name="left_prefix" default="left_" />
+    <xacro:property name="left_xyz" default="0.0 0.1 0.0" />
+    <xacro:property name="left_rpy" default="-0.9250245035569946 0.0 0.0" />
+
+    <xacro:property name="right_prefix" default="right_" />
+    <xacro:property name="right_xyz" default="0.0 -0.1 0.0" />
+    <xacro:property name="right_rpy" default="0.9250245035569946 0.0 0.0" />
+
+    <!-- 公共底座-->
+    <link name="${base_frame}" />
+
+    <xacro:include filename="$(find rm_description)/urdf/rm_75.urdf.xacro" />
+
+    <!-- 引入左臂 -->
+    <xacro:rm_75
+        parent="${base_frame}"
+        prefix="${left_prefix}"
+        base_xyz='${left_xyz}'
+        base_rpy='${left_rpy}' />
+
+    <!-- 引入右臂 -->
+    <xacro:rm_75
+        parent="${base_frame}"
+        prefix="${right_prefix}"
+        base_xyz='${right_xyz}'
+        base_rpy='${right_rpy}' />
+
+    <!-- 如有夹爪/相机，在此分别挂到两侧末端 -->
+    <!-- <xacro:include filename="xxx_gripper.xacro"/> -->
+    <!-- <xacro:xxx_gripper parent="${left_prefix}link7" prefix="${left_prefix}gr_"/> -->
+    <!-- <xacro:xxx_gripper parent="${right_prefix}link7" prefix="${right_prefix}gr_"/> -->
+</robot>

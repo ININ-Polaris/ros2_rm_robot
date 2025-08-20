@@ -1,12 +1,12 @@
 moveit_setup_assistant_config:
   urdf:
     package: rm_description
-    relative_path: urdf/rm_75_left.urdf
+    relative_path: urdf/rm_75_dual.urdf
   srdf:
-    relative_path: config/rm_75_description_left.srdf
+    relative_path: config/rm_75_description_dual.srdf
   package_settings:
-    author_name: Kaola
-    author_email: Kaola@qq.com
+    author_name: Charles
+    author_email: charles040318@qq.com
     generated_timestamp: 1700462725
   control_xacro:
     command:

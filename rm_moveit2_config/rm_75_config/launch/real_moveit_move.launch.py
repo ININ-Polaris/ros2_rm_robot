@@ -1,32 +1,28 @@
-import pprint
 from moveit_configs_utils import MoveItConfigsBuilder
-from moveit_configs_utils.launches import generate_moveit_rviz_launch
-
 from launch import LaunchDescription
-from launch.actions import (
-    DeclareLaunchArgument,
-    IncludeLaunchDescription,
-)
+from launch.actions import DeclareLaunchArgument
 from moveit_configs_utils.launch_utils import (
     add_debuggable_node,
     DeclareBooleanLaunchArg,
 )
 from launch.substitutions import LaunchConfiguration
 from launch_ros.parameter_descriptions import ParameterValue
+from ament_index_python.packages import get_package_share_directory
+import os
 
 
 def generate_launch_description():
+    # ① 指向“双臂”配置包与模型名
+    #   - 假设你已按前面指导把双臂 SRDF/kinematics 等放在 rm_moveit2_config 包里
+    #   - 模型名（robot_description）建议与 SRDF 一致，如 rm_75_dual
     moveit_config = (
-        MoveItConfigsBuilder("rm_75_description_left", package_name="rm_75_config")
-        .planning_pipelines(pipelines=["ompl"])
+        MoveItConfigsBuilder("rm_75_dual", package_name="rm_75_config")
+        .planning_pipelines(pipelines=["pilz_industrial_motion_planner"])
         .to_moveit_configs()
     )
 
     ld = LaunchDescription()
-
-    # 启动move_group
     my_generate_move_group_launch(ld, moveit_config)
-
     return ld
 
 
@@ -66,6 +62,8 @@ def my_generate_move_group_launch(ld, moveit_config):
         "publish_state_updates": True,
         "publish_transforms_updates": True,
         "monitor_dynamics": False,
+        # 显式指定默认规划管线为 Pilz（推荐）
+        "default_planning_pipeline": "pilz_industrial_motion_planner",
     }
     trajectory_execution = {
         "moveit_manage_controllers": False,
@@ -90,7 +88,6 @@ def my_generate_move_group_launch(ld, moveit_config):
         extra_debug_args=["--debug"],
         # Set the display variable, in case OpenGL code is used internally
         additional_env={"DISPLAY": ":0"},
-        namespace="left",
-        # arguments=["--ros-args", "--log-level", "debug"]
+        # arguments=["--ros-args", "--log-level", "debug"],
     )
     return ld

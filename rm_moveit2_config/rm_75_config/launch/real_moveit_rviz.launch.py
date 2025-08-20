@@ -17,8 +17,8 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     moveit_config = (
-        MoveItConfigsBuilder("rm_75_description_left", package_name="rm_75_config")
-        .planning_pipelines(pipelines=["ompl"])
+        MoveItConfigsBuilder("rm_75_dual", package_name="rm_75_config")
+        .planning_pipelines(pipelines=["pilz_industrial_motion_planner"])
         .to_moveit_configs()
     )
 
@@ -79,7 +79,6 @@ def my_generate_move_group_launch(ld, moveit_config):
     }
 
     move_group_params = [
-        moveit_config.to_dict(),
         move_group_configuration,
         trajectory_execution,
     ]
@@ -94,7 +93,7 @@ def my_generate_move_group_launch(ld, moveit_config):
         extra_debug_args=["--debug"],
         # Set the display variable, in case OpenGL code is used internally
         additional_env={"DISPLAY": ":0"},
-        namespace="left",
+        # namespace="left",
         # arguments=["--ros-args", "--log-level", "debug"]
     )
     return ld
@@ -117,9 +116,9 @@ def my_generate_moveit_rviz_launch(ld, moveit_config):
         moveit_config.robot_description_kinematics,
     ]
 
-    print("\n"*10)
+    print("\n" * 10)
     pprint.pprint(rviz_parameters)
-    print("\n"*10)
+    print("\n" * 10)
 
     add_debuggable_node(
         ld,
