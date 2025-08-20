@@ -4,8 +4,7 @@ CompileFlags:
     - -I/opt/ros/humble/include
 
     # 工作空间路径
-    # - -I/home/nvidia/ros2_ws/install/<package_name>/include
-    - -I/home/nvidia/ros2_ws/src
+    - -I/home/nvidia/ros2_ws/install/dubhe_mgi/include
 
     # C++标准
     - -std=c++17

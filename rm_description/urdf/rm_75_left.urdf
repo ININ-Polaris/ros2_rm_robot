@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <robot
   name="rm_75_description_left">
+  <link name="world" />
+  <joint name="left_base_mount" type="fixed">
+    <parent link="world" />
+    <child link="left_base_link" />
+    <origin xyz="0.0 0.1 0.0" rpy="0.0 0.0 -0.7853981634" />
+  </joint>
   <link
     name="left_base_link">
     <inertial>

@@ -26,10 +26,6 @@ def generate_launch_description():
 
     # 启动move_group
     my_generate_move_group_launch(ld, moveit_config)
-    # 启动rviz
-    # my_generate_moveit_rviz_launch(ld, moveit_config)
-
-    # generate_rsp_launch(ld, moveit_config)
 
     return ld
 
@@ -97,41 +93,4 @@ def my_generate_move_group_launch(ld, moveit_config):
         namespace="left",
         # arguments=["--ros-args", "--log-level", "debug"]
     )
-    return ld
-
-
-def my_generate_moveit_rviz_launch(ld, moveit_config):
-    """Launch file for rviz"""
-
-    ld.add_action(DeclareBooleanLaunchArg("debug", default_value=True))
-    ld.add_action(
-        DeclareLaunchArgument(
-            "rviz_config",
-            default_value=str(moveit_config.package_path / "config/moveit.rviz"),
-        )
-    )
-
-    rviz_parameters = [
-        moveit_config.planning_pipelines,
-        moveit_config.robot_description_kinematics,
-    ]
-
-    print("\n"*10)
-    pprint.pprint(rviz_parameters)
-    print("\n"*10)
-
-    add_debuggable_node(
-        ld,
-        package="rviz2",
-        executable="rviz2",
-        output="log",
-        respawn=False,
-        arguments=[
-            "-d",
-            LaunchConfiguration("rviz_config"),
-        ],
-        parameters=rviz_parameters,
-        namespace="left",
-    )
-
     return ld
