@@ -3,11 +3,11 @@
     <xacro:property name="base_frame" default="lift" />
 
     <xacro:property name="left_prefix" default="left_" />
-    <xacro:property name="left_xyz" default="0.0 0.1 0.0" />
+    <xacro:property name="left_xyz" default="0.0 0.125 0.0" />
     <xacro:property name="left_rpy" default="-0.9250245035569946 0.0 0.0" />
 
     <xacro:property name="right_prefix" default="right_" />
-    <xacro:property name="right_xyz" default="0.0 -0.1 0.0" />
+    <xacro:property name="right_xyz" default="0.0 -0.125 0.0" />
     <xacro:property name="right_rpy" default="0.9250245035569946 0.0 0.0" />
 
     <!-- 公共底座-->

@@ -17,7 +17,7 @@ def generate_launch_description():
     #   - 模型名（robot_description）建议与 SRDF 一致，如 rm_75_dual
     moveit_config = (
         MoveItConfigsBuilder("rm_75_dual", package_name="rm_75_config")
-        .planning_pipelines(pipelines=["pilz_industrial_motion_planner"])
+        .planning_pipelines(pipelines=["pilz_industrial_motion_planner", "chomp"])
         .to_moveit_configs()
     )
 
@@ -62,8 +62,6 @@ def my_generate_move_group_launch(ld, moveit_config):
         "publish_state_updates": True,
         "publish_transforms_updates": True,
         "monitor_dynamics": False,
-        # 显式指定默认规划管线为 Pilz（推荐）
-        "default_planning_pipeline": "pilz_industrial_motion_planner",
     }
     trajectory_execution = {
         "moveit_manage_controllers": False,
