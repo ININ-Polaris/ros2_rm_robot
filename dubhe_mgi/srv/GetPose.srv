@@ -1,0 +1,5 @@
+# 获取末端位姿服务
+---
+geometry_msgs/PoseStamped current_pose
+bool success
+string message

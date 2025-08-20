@@ -1,0 +1,6 @@
+# 获取关节角度服务
+---
+string[] joint_names
+float64[] joint_angles
+bool success
+string message

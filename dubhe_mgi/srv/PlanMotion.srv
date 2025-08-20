@@ -1,0 +1,11 @@
+# 运动规划服务
+string planner_type              # "LIN", "PTP", "CHOMP", 或其他
+bool use_pose_target            # true=使用位姿目标, false=使用关节角度目标
+geometry_msgs/PoseStamped target_pose
+float64[] target_joint_angles
+float64 velocity_scaling        # 速度缩放因子 (0.0-1.0)
+float64 acceleration_scaling    # 加速度缩放因子 (0.0-1.0)
+---
+bool success
+string message
+float64 planning_time
