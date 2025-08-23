@@ -21,7 +21,7 @@ def generate_launch_description():
                 executable="rm_driver",  # 节点。
                 parameters=[left_config],  # 接入参数文件
                 output="screen",
-                namespace="left",
+                namespace="/left",
                 remappings=[("/left/joint_states", "/joint_states")],
             ),
             Node(
@@ -29,7 +29,7 @@ def generate_launch_description():
                 executable="rm_driver",  # 节点。
                 parameters=[right_config],  # 接入参数文件
                 output="screen",
-                namespace="right",
+                namespace="/right",
                 remappings=[("/right/joint_states", "/joint_states")],
             ),
         ]

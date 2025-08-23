@@ -16,20 +16,20 @@ def generate_launch_description():
 
     moveit_config = (
         MoveItConfigsBuilder("rm_75_dual", package_name="rm_75_config")
-        .planning_pipelines(pipelines=["ompl"])
+        .planning_pipelines(pipelines=["pilz_industrial_motion_planner", "chomp"])
         .to_moveit_configs()
     )
 
     client = Node(
         package="dubhe_mgi",
-        executable="dubhe_mgi",
-        namespace=ns,
+        executable="dubhe_mgi_node",
+        # namespace=ns,
         output="screen",
         parameters=[
             moveit_config.to_dict(),
             {"planning_group": group, "reference_frame": ref, "robot_ns": ns},
         ],
-        # arguments=["--ros-args", "--log-level", "debug"],
+        arguments=["--ros-args", "--log-level", "debug"],
     )
 
     return LaunchDescription([ns_arg, group_arg, ref_arg, client])

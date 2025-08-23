@@ -3,24 +3,21 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    ld = LaunchDescription()
-    left_node = Node(
-        package="rm_control",  # 节点所在的功能包
-        executable="rm_control",  # 表示要运行的可执行文件名或脚本名字.py
-        parameters=[{"follow": True}, {"arm_type": 75}],  # 接入参数文件
-        output="screen",  # 用于将话题信息打印到屏幕
-        namespace="left",
+    return LaunchDescription(
+        [
+            Node(
+                package="rm_control",  # 节点所在的功能包
+                executable="rm_control",  # 表示要运行的可执行文件名或脚本名字.py
+                parameters=[{"follow": True}, {"arm_type": 75}],  # 接入参数文件
+                output="screen",  # 用于将话题信息打印到屏幕
+                namespace="/left",
+            ),
+            Node(
+                package="rm_control",  # 节点所在的功能包
+                executable="rm_control",  # 表示要运行的可执行文件名或脚本名字.py
+                parameters=[{"follow": True}, {"arm_type": 75}],  # 接入参数文件
+                output="screen",  # 用于将话题信息打印到屏幕
+                namespace="/right",
+            ),
+        ]
     )
-
-    ld.add_action(left_node)
-
-    right_node = Node(
-        package="rm_control",  # 节点所在的功能包
-        executable="rm_control",  # 表示要运行的可执行文件名或脚本名字.py
-        parameters=[{"follow": True}, {"arm_type": 75}],  # 接入参数文件
-        output="screen",  # 用于将话题信息打印到屏幕
-        namespace="right",
-    )
-
-    ld.add_action(right_node)
-    return ld

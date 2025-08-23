@@ -50,8 +50,8 @@ bool point_changed = false;
 /*三次样条插值后周期*/
 double rate = 0.020; // 5ms
 
-float min_interval = 20;           //透传周期,单位:秒
-float wait_move_finish_time = 1.5; //等待运动到位时间,单位:秒
+float min_interval = 20;           // 透传周期,单位:秒
+float wait_move_finish_time = 1.5; // 等待运动到位时间,单位:秒
 int count_keep_send = 0;
 int count_final_joint = 0;
 
@@ -297,7 +297,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle) 
   point_changed = false;
 
   /***********Start gubs 2021/9/16 修复Moveit在同一位姿重复规划执行导致rm_contorl异常停止的Bug***********/
-  if (point_num > 3) //判断当moveit规划的路点数大于3时为有效规划并进行三次样条插值
+  if (point_num > 3) // 判断当moveit规划的路点数大于3时为有效规划并进行三次样条插值
   {
 
     /* 各个关节位置 */
@@ -478,7 +478,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle) 
                     p2.vector_cnt = 0;
 
                     point_changed = true;
-                    //等待定时器将数据取出并发送完
+                    // 等待定时器将数据取出并发送完
                     while (point_changed) {
                       // ros::WallDuration(0.002).sleep();
                       if (!rclcpp::ok() || goal_handle->is_canceling()) {
@@ -496,7 +496,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle) 
                   p2.vector_cnt = 0;
 
                   point_changed = true;
-                  //等待定时器将数据取出并发送完
+                  // 等待定时器将数据取出并发送完
                   while (point_changed) {
                     // ros::WallDuration(0.002).sleep();
                     if (!rclcpp::ok() || goal_handle->is_canceling()) {
@@ -569,7 +569,7 @@ void Rm_Control::execute_move(const std::shared_ptr<GoalHandleFJT> goal_handle) 
     p2.vector_cnt = 0;
 
     point_changed = true;
-    //等待定时器将数据取出并发送完
+    // 等待定时器将数据取出并发送完
     while (point_changed) {
       // ros::WallDuration(0.002).sleep();
       if (!rclcpp::ok() || goal_handle->is_canceling()) {
